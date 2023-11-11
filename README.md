@@ -1,5 +1,11 @@
 # Resumo
 
+## Status do projeto:
+* IAC (S3)      Feito!
+* IAC (RDS)     Feito!
+* IAC (Lambda)  Pendente
+* Orquestração  Pendente
+
 ## Objetivo
 Esse projeto visa automatizar a coleta de dados abertos de empresas listadas na bolsa de valores. O site que contém os dados é (https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/DFP/DADOS/). De todos os dados disponíveis, este projeto visa coletar as DRE's.
 A abordagem é descrita a seguir:
@@ -47,6 +53,12 @@ Pronto!
 
 # Objective
 This project aims to automate the colecting of open data from brazilian companies that are listed on B3 (Brasil, Bolsa, Balcão). The data collection is available on (https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/DFP/DADOS/). Among the available data, this project is focused on DRE's files.
+
+## Project Status:
+* IAC (S3)      Done!
+* IAC (RDS)     Done!
+* IAC (Lambda)  Pending
+* Orquestration Pending
 
 ## Tecnologies
 The aproach is described as follows:
