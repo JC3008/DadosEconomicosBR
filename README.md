@@ -35,12 +35,12 @@ Navegue até a pasta airflow
 Inicie o projeto com o comando: astro dev start
 Dentro da pasta airflow, crie um arquivo chamado .env e insira as credenciais AWS.
 Exemplo:
-aws_access_key_id=****************************
-aws_secret_access_key=****************************
+* aws_access_key_id=****************************
+* aws_secret_access_key=****************************
 No navegador, acesse http://localhost:8080
 Será solicitado usuario e senha para UI do Airflow.
-user:admin
-password:admin
+* user:admin
+* password:admin
 Você verá a DAG (elt_dfp_to_s3)
 Habilite a DAG
 Pronto!
@@ -64,8 +64,8 @@ Navigate to airflow folder
 Start the project by running the follow command: astro dev start
 Within the airflow folder, create a file called (.env) and type the AWS credentials.
 IE:
-aws_access_key_id=****************************
-aws_secret_access_key=****************************
+* aws_access_key_id=****************************
+* aws_secret_access_key=****************************
 User and password are going to be requested. Type as follow:
 user:admin
 password:admin
