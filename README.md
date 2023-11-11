@@ -5,12 +5,12 @@ Esse projeto visa automatizar a coleta de dados abertos de empresas listadas na 
 A abordagem é descrita a seguir:
 
 ## Tecnologias
-IAC: Terraform
-Metodologia de armazenamento: Datalake (AWS S3)
-Orquestração: Astro-Python-SDK
-Conteinerização: Docker
-ELT: Python & SQL
-Dataviz: Power BI
+* IAC: Terraform
+* Metodologia de armazenamento: Datalake (AWS S3)
+* Orquestração: Astro-Python-SDK
+* Conteinerização: Docker
+* ELT: Python & SQL
+* Dataviz: Power BI
 
 ## Instruções básicas
 Para provisionar os recursos necessários na nuvem AWS, será necessário instalar o terraform e o AWS CLI. Configurar um profile no AWS CLI passando as credenciais, região e formato de arquivo. Após configurar, siga os seguintes passos:
@@ -51,12 +51,12 @@ This project aims to automate the colecting of open data from brazilian companie
 ## Tecnologies
 The aproach is described as follows:
 
-IAC (Infrasctructure as code): Terraform
-Methodology: Datalake (AWS S3)
-Orquestration: Astro-Python-SDK
-Conteinerization: Docker
-ELT: Python & SQL
-Dataviz: Power BI
+* IAC (Infrasctructure as code): Terraform
+* Methodology: Datalake (AWS S3)
+* Orquestration: Astro-Python-SDK
+* Conteinerization: Docker
+* ELT: Python & SQL
+* Dataviz: Power BI
 
 ## Orquestration on Astro-Python-SDK
 Start the Docker Desktop
