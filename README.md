@@ -51,6 +51,27 @@ Você verá a DAG (elt_dfp_to_s3)
 Habilite a DAG
 Pronto!
 
+## Airflow connections.
+
+### AWS
+* Connection id: aws_default
+* Connection Type: amazon_s3
+* Extra Args: {"aws_access_key_id":"","aws_secret_access_key":""}
+
+### Snowflake
+Para conectar o Airflow ao Snowflake, adicione a conexão conforme a seguir:
+* Connection id: SNOWFLAKE_CONN_ID
+* Connection Type: Snowflake
+* Schema: ASTRO_SDK_SCHEMA
+* login: [Seu login do snowflake]
+* Password: [Seu Password do snowflake]
+* Account: [Sua account do Snowflake]
+Warehouse: [Nome do DW]
+* Database: [Nome do DB]
+* Region: [Região em que o Snowflake está configurado]
+* Role: ACCOUNTADMIN
+
+
 # Objective
 This project aims to automate the colecting of open data from brazilian companies that are listed on B3 (Brasil, Bolsa, Balcão). The data collection is available on (https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/DFP/DADOS/). Among the available data, this project is focused on DRE's files.
 
