@@ -1,10 +1,12 @@
 # Resumo
 
 ## Status do projeto:
-* IAC (S3)      Feito!
-* IAC (RDS)     Feito!
-* IAC (Lambda)  Pendente
-* Orquestração  Pendente
+* IAC (S3)                      Feito!
+* IAC (RDS)                     Feito!
+* IAC (Lambda)                  Pendente
+* Orquestração SourceToS3       Feito!
+* Orquestração S3ToSnowflake    Pendente
+* Data Warehouse                Pendente
 
 ## Objetivo
 Esse projeto visa automatizar a coleta de dados abertos de empresas listadas na bolsa de valores. O site que contém os dados é (https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/DFP/DADOS/). De todos os dados disponíveis, este projeto visa coletar as DRE's.
@@ -12,7 +14,8 @@ A abordagem é descrita a seguir:
 
 ## Tecnologias
 * IAC: Terraform
-* Metodologia de armazenamento: Datalake (AWS S3)
+* Metodologia de armazenamento: Datalake        (AWS S3)
+* Metodologia de armazenamento: Data Warehouse  (Snowflake)
 * Orquestração: Astro-Python-SDK
 * Conteinerização: Docker
 * ELT: Python & SQL
