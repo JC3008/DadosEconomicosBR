@@ -36,13 +36,14 @@ Com esses comandos, espera-se que os recursos estejam criados na AWS dentro da r
 
 ### Snowflake configuração de ambiente.
 Na plataforma Snowflake, crie os seguintes recursos:
-Database:DADOSECONOMICOSBR_DB
 
-Data Warehouse: DADOSECONOMICOSBR_DW
+* Database:DADOSECONOMICOSBR_DB
 
-Schema: Astro_SDK_Schema
+* Data Warehouse: DADOSECONOMICOSBR_DW
 
-Tabela: dfp_cia_aberta_DRE_con_2023
+* Schema: Astro_SDK_Schema
+
+* Tabela: dfp_cia_aberta_DRE_con_2023
 
 create or replace table dfp_cia_aberta_DRE_con_2023
 (
@@ -63,6 +64,8 @@ create or replace table dfp_cia_aberta_DRE_con_2023
     ST_CONTA_FIXA string
 )
 
+* File Format: CSV
+
 create file format CSV
     type = CSV 
     ENCODING = 'ISO-8859-1'
@@ -75,7 +78,9 @@ create file format CSV
     TIMESTAMP_FORMAT = 'AUTO' 
     ESCAPE = 'NONE' 
     FIELD_OPTIONALLY_ENCLOSED_BY = '\042'
-    
+
+* Stage: s3_dfp_consume_zone
+
 CREATE STAGE s3_dfp_consume_zone 
     FILE_FORMAT = CSV
 	URL = 's3://de-okkus-consume-dev-727477891012/2023/dfp_cia_aberta_DRE_con_2023.csv' 
