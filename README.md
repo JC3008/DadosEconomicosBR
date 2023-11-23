@@ -63,7 +63,7 @@ Pronto!
 
 ### Snowflake
 Para conectar o Airflow ao Snowflake, adicione a conexão conforme a seguir:
-* Connection id: SNOWFLAKE_CONN_ID
+* Connection id: snowflake_default
 * Connection Type: Snowflake
 * Schema: ASTRO_SDK_SCHEMA
 * login: [Seu login do snowflake]
