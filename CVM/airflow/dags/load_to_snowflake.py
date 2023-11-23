@@ -1,5 +1,12 @@
 
 # Tasks performed by this code
+'''This code performs the upload from s3 files into Snowflake platform
+by using task flow aql.load_file built in function. This function gets
+the file from s3 bucket consume-zone once a day.
+
+It s required to set the aws credendials in the airflow connection.
+For detailed information take a look at ReadMe file on https://github.com/JC3008/DadosEconomicosBR.
+'''
 # import sys
 # sys.path.append("C:/Users/SALA443/Desktop/Projetos/Dados_B3/CVM/airflow_env/Lib/")
 # x = sys.path
@@ -29,7 +36,7 @@ default_args = {
 @dag(
     dag_id="load_CVM_to_snowflake",
     start_date=datetime(2023,11,12),
-    schedule="0,7 13 * * *",
+    schedule="0 13 * * *",
     max_active_runs=1,
     catchup=False,
     max_active_tasks=1,
@@ -51,8 +58,8 @@ def load_files_snowflake():
     # Load files into snowflake
     load_DFP_files = aql.load_file(
         task_id="load_DFP_files",
-        input_file=File(path=f"s3://de-okkus-landing-dev-727477891012/2023/11/14/",filetype=FileType.CSV, conn_id=SOURCE_AWS_CONN_ID),
-        output_table=Table(name="DFP_CVM",conn_id=SNOWFLAKE_CONN_ID,metadata=Metadata(schema="ASTRO_SDK_SCHEMA")),
+        input_file=File(path="s3://de-okkus-consume-dev-727477891012/2023/11/22/dfp_cia_aberta_DRE_con_2023.csv",filetype=FileType.CSV, conn_id=SOURCE_AWS_CONN_ID),
+        output_table=Table(name="DFP_CIA_ABERTA_DRE_CON_2023",conn_id=SNOWFLAKE_CONN_ID,metadata=Metadata(schema="ASTRO_SDK_SCHEMA")),
         if_exists="replace",
         # is_incremental=False,
         use_native_support=True,
