@@ -34,6 +34,54 @@ pronto!
 
 Com esses comandos, espera-se que os recursos estejam criados na AWS dentro da região definida anteriormente.
 
+### Snowflake configuração de ambiente.
+Na plataforma Snowflake, crie os seguintes recursos:
+Database:DADOSECONOMICOSBR_DB
+
+Data Warehouse: DADOSECONOMICOSBR_DW
+
+Schema: Astro_SDK_Schema
+
+Tabela: dfp_cia_aberta_DRE_con_2023
+
+create or replace table dfp_cia_aberta_DRE_con_2023
+(
+    CNPJ_CIA string,
+    DT_REFER string,
+    VERSAO integer,
+    DENOM_CIA string,
+    CD_CVM integer,
+    GRUPO_DFP string,
+    MOEDA string,
+    ESCALA_MOEDA string,
+    ORDEM_EXERC string,
+    DT_INI_EXERC string,
+    DT_FIM_EXERC string,
+    CD_CONTA string,
+    DS_CONTA string,
+    VL_CONTA float,
+    ST_CONTA_FIXA string
+)
+
+create file format CSV
+    type = CSV 
+    ENCODING = 'ISO-8859-1'
+    COMPRESSION = AUTO 
+    RECORD_DELIMITER = '\n'
+    FIELD_DELIMITER = ';' 
+    SKIP_HEADER = 1
+    DATE_FORMAT = 'AUTO' 
+    TIME_FORMAT = 'AUTO'
+    TIMESTAMP_FORMAT = 'AUTO' 
+    ESCAPE = 'NONE' 
+    FIELD_OPTIONALLY_ENCLOSED_BY = '\042'
+    
+CREATE STAGE s3_dfp_consume_zone 
+    FILE_FORMAT = CSV
+	URL = 's3://de-okkus-consume-dev-727477891012/2023/dfp_cia_aberta_DRE_con_2023.csv' 
+	CREDENTIALS = ( AWS_KEY_ID = '********' AWS_SECRET_KEY = '********' ) 
+	DIRECTORY = ( ENABLE = true );
+
 ### Orquestração no Airflow usando Astro-Python-SDK
 No script CVM\airflow\dags\tasks\extract.py existe uma referência ao arquivo CVM\airflow\.env, neste arquivo deve-se manter a access key e a secret key da AWS. Então antes de iniciar o processo de build do astro-python-sdk, insira suas credenciais neste arquivo. E lembre-se de nunca expor suas credenciais em repositórios publicos.
 
