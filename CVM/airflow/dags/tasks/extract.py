@@ -30,8 +30,7 @@ CVM DFPs and then save it into S3 bucket.
 You can navigate over the script using the commented tags as bellow:
 1-Setting up variables
 2-Initiate ELT for DFPs files
-3-Convert to csv
-4-Writting it into S3 bucket  
+3-Initiate ELT for CAD files
 '''
 
 # 1-Setting up variables
