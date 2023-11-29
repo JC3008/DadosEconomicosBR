@@ -11,7 +11,7 @@ from airflow.models.baseoperator import chain
 
 @dag(
     dag_id="elt_dfp_to_s3",
-    schedule="0,7 13 * * *",
+    schedule="0 13 * * *",
     start_date=datetime(2023, 11, 9),
     catchup=False,
     default_args={
