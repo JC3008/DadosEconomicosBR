@@ -1,0 +1,12 @@
+.git
+.env
+.DS_Store # macOS specific ignore
+airflow_settings.yaml
+__pycache__/
+astro
+dags/__pycache__
+dags/tasks/__pycache__
+dags/tasks/landing/
+dags/tasks/raw/
+dags/tasks/AWSCompromisedKeyQuarantineV2.json
+airflow\dags\tasks\AWSCompromisedKeyQuarantineV2.json

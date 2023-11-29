@@ -1,5 +1,5 @@
 from pendulum import datetime
-from tasks.extract import create_path_folder, storing_files,UnzipLandingToRaw,s3_upload_file,s3_upload_file_iterate_source
+from tasks.extract import create_path_folder, storing_files,UnzipLandingToRaw,s3_upload_file_iterate_source
 from airflow.operators.empty import EmptyOperator
 from datetime import datetime
 from airflow.decorators import (
@@ -43,14 +43,19 @@ def elt_to_s3():
         return None
     
     @task()
-    def upload_to_s3():
+    def upload_to_s3_landing():
         s3_upload_file_iterate_source()
         return None
-      
+    
+
+
+    
     t1 = create_local_dir()
     t2 = getting_files_from_opendata()
     t3 = saving_as_csv()
-    t4 = upload_to_s3()  
+    t4 = upload_to_s3_landing()  
+
+
     
     chain(init,t1,t2,t3,t4,finish)    
 
