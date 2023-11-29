@@ -208,7 +208,7 @@ def s3_cad_cia_abertaCVM_to_landing():
     url = 'https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv'
     df = pd.read_csv(url,sep=';',encoding='Windows-1252')
     buffer = io.StringIO()
-    df.to_csv(buffer,encoding='utf-8',sep=';')
+    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)
     
     client.put_object(ACL='private',
               Body=buffer.getvalue(),
@@ -230,7 +230,7 @@ def s3_cad_cia_abertaCVM_to_processed():
     df['loaded_toProcessed_date'] = date.today()
     df['loaded_toProcessed_time'] = datetime.now().time()
     buffer = io.StringIO()
-    df.to_csv(buffer,encoding='utf-8',sep=';')    
+    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)    
     
     client.put_object(
               ACL='private',
@@ -249,7 +249,7 @@ def s3_cad_cia_abertaCVM_to_consume():
     df['loaded_toConsume_date'] = date.today()
     df['loaded_toConsume_time'] = datetime.now().time()
     buffer = io.StringIO()
-    df.to_csv(buffer,encoding='utf-8',sep=';')    
+    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)    
     
     client.put_object(
               ACL='private',
