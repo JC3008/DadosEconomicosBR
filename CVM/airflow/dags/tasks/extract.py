@@ -25,7 +25,7 @@ import gzip
 url = 'https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv'
 
 '''
-This script aims to build the local enviroment to receive files from 
+This script aims to build the enviroment to receive files from 
 CVM DFPs and then save it into S3 bucket.
 You can navigate over the script using the commented tags as bellow:
 1-Setting up variables
@@ -91,7 +91,7 @@ def connection_status(url):
 '''
 First Step
 This piece of code aims to extract data from https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/DFP/DADOS/
-and to save into local landing path as zipfiles
+and to save into temporary local landing path as zipfiles.
 '''
 def create_path_folder():
     if not os.path.exists(LandingZone):
@@ -198,7 +198,7 @@ def s3_upload_file_iterate_source():
     
         if os.path.isfile(f):
             s3_upload_file(f, bucket['source_bucket'], object_name=None)
-
+# 3-Initiate ELT for CAD files
 def s3_cad_cia_abertaCVM_to_landing():
     
     bucket = folder_builder(
