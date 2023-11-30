@@ -187,6 +187,9 @@ def s3_upload_file(file_name, bucket, object_name=None):
 
 def s3_upload_file_iterate_source():   
     
+    WINDOWS_LINE_ENDING = b'\r\n'
+    UNIX_LINE_ENDING = b'\n'
+    
     bucket = folder_builder(
     sourcelayer='landing',
     targetlayer='processed',
@@ -194,9 +197,32 @@ def s3_upload_file_iterate_source():
     
     for filename in os.listdir(ProcessedZone):
         f = os.path.join(ProcessedZone, filename)
-    
+        with open(f, 'rb') as open_file:
+            content = open_file.read()
+            content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
+        
         if os.path.isfile(f):
-            s3_upload_file(f, bucket['source_bucket'], object_name=None)
+            df = pd.read_csv(f,sep=';',encoding='Windows-1252')
+            buffer=io.StringIO()
+            df.to_csv(buffer,sep=';',encoding='utf-8',index=None)
+            
+            client.put_object(
+                Body=buffer.getvalue(),
+                Bucket=bucket['source_bucket'],
+                Key=f'{YearMonthDateFolder}{filename}') 
+
+# def s3_upload_file_iterate_source():   
+    
+#     bucket = folder_builder(
+#     sourcelayer='landing',
+#     targetlayer='processed',
+#     storageOption='s3').storage_selector  
+    
+#     for filename in os.listdir(ProcessedZone):
+#         f = os.path.join(ProcessedZone, filename)
+    
+#         if os.path.isfile(f):
+#             s3_upload_file(f, bucket['source_bucket'], object_name=None)
 # 3-Initiate ELT for CAD files
 def s3_cad_cia_abertaCVM_to_landing():
     
