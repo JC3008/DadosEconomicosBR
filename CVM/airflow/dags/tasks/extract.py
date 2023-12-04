@@ -277,28 +277,33 @@ def s3_cad_cia_abertaCVM_to_landing():
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_landing) - (Message:{rows_count} rows for cad_cia_aberta.csv were uploded to s3 bucket {bucket['source_bucket']})")
 
 def s3_cad_cia_abertaCVM_to_processed():
-    
+    s3_connection_status()
     bucket = folder_builder(
     sourcelayer='landing',
     targetlayer='processed',
     storageOption='s3').storage_selector 
-    
+
     key = f'{YearMonthDateFolder}cad_cia_aberta.csv'
+    
+    # logging checkpoint
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message:Data transfer has been configured as {bucket['source_bucket']} to {bucket['target_bucket']}{key})")
     
     data = client.get_object(Bucket=bucket['source_bucket'],Key=key)
     
     df = pd.read_csv(data['Body'],sep=';',encoding='utf-8')
+    rows_count = len(df. index)
     df['loaded_toProcessed_date'] = date.today()
     df['loaded_toProcessed_time'] = datetime.now().time()
     buffer = io.StringIO()
     df.to_csv(buffer,encoding='utf-8',sep=';',index=None)    
-    
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message: Pandas dataframe was successfully buffered by StringIO)")
     client.put_object(
               ACL='private',
               Body=buffer.getvalue(),
               Bucket=bucket['target_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
-    
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message: {rows_count} rows for cad_cia_aberta.csv was sent from {bucket['source_bucket']} to {bucket['target_bucket']})")
+
 def s3_cad_cia_abertaCVM_to_consume():
 
     bucket = 'de-okkus-processed-dev-727477891012'
