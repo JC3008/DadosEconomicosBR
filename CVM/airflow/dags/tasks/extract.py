@@ -92,10 +92,21 @@ def connection_status(url):
     resp = requests.get(url)
     stt = str(resp.status_code)
     if stt == '200':
-        logging.info(f'The URL is available: {stt}')
+        logging.info(f'The {url} is available: {stt}')
     else:
-        logging.error(f"The URL isn't available: {stt}. Please check if is there any issue with given {url}")
+        logging.error(f"The {url} isn't available: {stt}. Please check if is there any issue with given {url}")
     return stt
+
+def s3_connection_status():
+    try:
+        client = boto3.client('s3',
+                        aws_access_key_id=credentials['aws_access_key_id'],
+                        aws_secret_access_key=credentials['aws_secret_access_key']
+                        )
+        logging.info(f"AWS access granted for aws_access_key_id {credentials['aws_access_key_id'][:5]} and aws_secret_access_key {credentials['aws_secret_access_key'][:5]} ")
+    except:
+        logging.error(f"AWS access denied for aws_access_key_id {credentials['aws_access_key_id'][:5]} and aws_secret_access_key {credentials['aws_secret_access_key'][:5]} ")
+        
 
 # 2-Initiate ELT for DFPs files
 '''
@@ -253,13 +264,17 @@ def s3_cad_cia_abertaCVM_to_landing():
     buffer = io.StringIO()    
     df.to_csv(buffer,encoding='utf-8',sep=';',index=None)
     # logging checkpoint
-    logging.info(f"Pandas dataframe was successfully buffered by StringIO")
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_landing) - (Message: Pandas dataframe was successfully buffered by StringIO)")
+    
+    s3_connection_status()
+    
     client.put_object(ACL='private',
               Body=buffer.getvalue(),
               Bucket=bucket['source_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
+    
     # logging checkpoint
-    logging.info(f"{rows_count} rows for cad_cia_aberta.csv were uploded to s3 bucket {bucket['source_bucket']}")
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_landing) - (Message:{rows_count} rows for cad_cia_aberta.csv were uploded to s3 bucket {bucket['source_bucket']})")
 
 def s3_cad_cia_abertaCVM_to_processed():
     
