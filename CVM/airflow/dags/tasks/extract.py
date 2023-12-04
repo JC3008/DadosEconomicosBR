@@ -305,21 +305,34 @@ def s3_cad_cia_abertaCVM_to_processed():
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message: {rows_count} rows for cad_cia_aberta.csv was sent from {bucket['source_bucket']} to {bucket['target_bucket']})")
 
 def s3_cad_cia_abertaCVM_to_consume():
+    s3_connection_status()
+    bucket = folder_builder(
+    sourcelayer='processed',
+    targetlayer='consume',
+    storageOption='s3').storage_selector 
 
-    bucket = 'de-okkus-processed-dev-727477891012'
+    # bucket = 'de-okkus-processed-dev-727477891012'
     key = f'{YearMonthDateFolder}cad_cia_aberta.csv'
     
-    data = client.get_object(Bucket=bucket,Key=key)
+    data = client.get_object(Bucket=bucket['source_bucket'],Key=key)
     
-    df = pd.read_csv(data['Body'],sep=';',encoding='utf-8')
+    df = pd.read_csv(data['Body'],sep=';',encoding='utf-8')    
+    rows_count = len(df. index)
     df['loaded_toConsume_date'] = date.today()
     df['loaded_toConsume_time'] = datetime.now().time()
+    
+    # logging checkpoint
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_consume) - (Message:Data transfer has been configured as {bucket['source_bucket']} to {bucket['target_bucket']}{key})")
+    
     buffer = io.StringIO()
-    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)    
+    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)   
+    
+    # logging checkpoint 
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_consume) - (Message: Pandas dataframe was successfully buffered by StringIO)")
     
     client.put_object(
               ACL='private',
               Body=buffer.getvalue(),
-              Bucket='de-okkus-consume-dev-727477891012',
+              Bucket=bucket['target_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
-
+    logging.info(f"(Function:s3_cad_cia_abertaCVM_to_consume) - (Message: {rows_count} rows for cad_cia_aberta.csv was sent from {bucket['source_bucket']} to {bucket['target_bucket']})")
