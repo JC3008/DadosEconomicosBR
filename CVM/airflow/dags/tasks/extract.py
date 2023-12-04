@@ -1,7 +1,7 @@
 import sys 
 sys.path.append(r'C:\Users\SALA443\Desktop\Projetos\Dados_B3 - teste\CVM\airflow')
 sys.path.append(r"C:\Users\SALA443\Desktop\Projetos\Dados_B3 - teste\Transform\CVM_env\Lib\site-packages")
-# print (sys.path)
+
 from tasks.objects import *
 # from objects import *
 import datetime as dt
@@ -33,7 +33,11 @@ You can navigate over the script using the commented tags as bellow:
 3-Initiate ELT for CAD files
 '''
 
-# 1-Setting up variables
+
+# Logging parameters configured:
+# All logs can be checked on Airflow UI in order to assure that ELT process is
+# going as expected
+# You can find logs along this script by  searching *logging checkpoint
 logging.basicConfig(
     
         level=logging.INFO,
@@ -41,6 +45,7 @@ logging.basicConfig(
         format="%(message)s -  %(funcName)s - %(filename)s - %(asctime)s"
         )
 
+# 1-Setting up variables
 '''
 The line bellow defines which aws_credential is gonna be used for connect
 aws resources
@@ -92,8 +97,10 @@ def connection_status(url):
     resp = requests.get(url)
     stt = str(resp.status_code)
     if stt == '200':
+        # *logging checkpoint
         logging.info(f'The {url} is available: {stt}')
     else:
+        # *logging checkpoint
         logging.error(f"The {url} isn't available: {stt}. Please check if is there any issue with given {url}")
     return stt
 
@@ -103,8 +110,10 @@ def s3_connection_status():
                         aws_access_key_id=credentials['aws_access_key_id'],
                         aws_secret_access_key=credentials['aws_secret_access_key']
                         )
+        # *logging checkpoint
         logging.info(f"AWS access granted for aws_access_key_id {credentials['aws_access_key_id'][:5]} and aws_secret_access_key {credentials['aws_secret_access_key'][:5]} ")
     except:
+        # *logging checkpoint
         logging.error(f"AWS access denied for aws_access_key_id {credentials['aws_access_key_id'][:5]} and aws_secret_access_key {credentials['aws_secret_access_key'][:5]} ")
         
 
@@ -117,7 +126,9 @@ and to save into temporary local landing path as zipfiles.
 def create_path_folder():
     if not os.path.exists(LandingZone):
         os.makedirs(LandingZone)
+        # *logging checkpoint
         logging(f'Local path was created as {LandingZone}') 
+    # *logging checkpoint
     logging(f'Path {LandingZone} was found.')
          
 
@@ -205,6 +216,7 @@ def s3_upload_file(file_name, bucket, object_name=None):
     try:
         response = s3_client.upload_file(file_name, bucket, f'{YearMonthDateFolder}{object_name}')
     except ClientError as e:
+        # *logging checkpoint
         logging.error(e)
         return False
     return True
@@ -256,14 +268,14 @@ def s3_cad_cia_abertaCVM_to_landing():
     storageOption='s3').storage_selector  
     
     url = 'https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv'
-    # logging checkpoint
+    # *logging checkpoint
     connection_status(url)
        
     df = pd.read_csv(url,sep=';',encoding='Windows-1252')
     rows_count = len(df. index)
     buffer = io.StringIO()    
     df.to_csv(buffer,encoding='utf-8',sep=';',index=None)
-    # logging checkpoint
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_landing) - (Message: Pandas dataframe was successfully buffered by StringIO)")
     
     s3_connection_status()
@@ -273,7 +285,7 @@ def s3_cad_cia_abertaCVM_to_landing():
               Bucket=bucket['source_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
     
-    # logging checkpoint
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_landing) - (Message:{rows_count} rows for cad_cia_aberta.csv were uploded to s3 bucket {bucket['source_bucket']})")
 
 def s3_cad_cia_abertaCVM_to_processed():
@@ -285,7 +297,7 @@ def s3_cad_cia_abertaCVM_to_processed():
 
     key = f'{YearMonthDateFolder}cad_cia_aberta.csv'
     
-    # logging checkpoint
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message:Data transfer has been configured as {bucket['source_bucket']} to {bucket['target_bucket']}{key})")
     
     data = client.get_object(Bucket=bucket['source_bucket'],Key=key)
@@ -295,13 +307,18 @@ def s3_cad_cia_abertaCVM_to_processed():
     df['loaded_toProcessed_date'] = date.today()
     df['loaded_toProcessed_time'] = datetime.now().time()
     buffer = io.StringIO()
-    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)    
+    df.to_csv(buffer,encoding='utf-8',sep=';',index=None)   
+    
+    # *logging checkpoint 
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message: Pandas dataframe was successfully buffered by StringIO)")
+    
     client.put_object(
               ACL='private',
               Body=buffer.getvalue(),
               Bucket=bucket['target_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
+    
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_processed) - (Message: {rows_count} rows for cad_cia_aberta.csv was sent from {bucket['source_bucket']} to {bucket['target_bucket']})")
 
 def s3_cad_cia_abertaCVM_to_consume():
@@ -321,7 +338,7 @@ def s3_cad_cia_abertaCVM_to_consume():
     df['loaded_toConsume_date'] = date.today()
     df['loaded_toConsume_time'] = datetime.now().time()
     
-    # logging checkpoint
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_consume) - (Message:Data transfer has been configured as {bucket['source_bucket']} to {bucket['target_bucket']}{key})")
     
     buffer = io.StringIO()
@@ -335,4 +352,6 @@ def s3_cad_cia_abertaCVM_to_consume():
               Body=buffer.getvalue(),
               Bucket=bucket['target_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
+    
+    # *logging checkpoint
     logging.info(f"(Function:s3_cad_cia_abertaCVM_to_consume) - (Message: {rows_count} rows for cad_cia_aberta.csv was sent from {bucket['source_bucket']} to {bucket['target_bucket']})")
