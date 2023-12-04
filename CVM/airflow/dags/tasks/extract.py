@@ -34,6 +34,13 @@ You can navigate over the script using the commented tags as bellow:
 '''
 
 # 1-Setting up variables
+logging.basicConfig(
+    
+        level=logging.INFO,
+        handlers=[logging.FileHandler("dadoseconomicos.log", mode='w'),logging.StreamHandler()],
+        format="%(message)s -  %(funcName)s - %(filename)s - %(asctime)s"
+        )
+
 '''
 The line bellow defines which aws_credential is gonna be used for connect
 aws resources
@@ -84,6 +91,10 @@ soup = BeautifulSoup(html_text, 'html.parser')
 def connection_status(url):
     resp = requests.get(url)
     stt = str(resp.status_code)
+    if stt == '200':
+        logging.info(f'The URL is available: {stt}')
+    else:
+        logging.error(f"The URL isn't available: {stt}. Please check if is there any issue with given {url}")
     return stt
 
 # 2-Initiate ELT for DFPs files
@@ -94,7 +105,9 @@ and to save into temporary local landing path as zipfiles.
 '''
 def create_path_folder():
     if not os.path.exists(LandingZone):
-        os.makedirs(LandingZone) 
+        os.makedirs(LandingZone)
+        logging(f'Local path was created as {LandingZone}') 
+    logging(f'Path {LandingZone} was found.')
          
 
 url_list = list()
@@ -232,14 +245,21 @@ def s3_cad_cia_abertaCVM_to_landing():
     storageOption='s3').storage_selector  
     
     url = 'https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv'
+    # logging checkpoint
+    connection_status(url)
+       
     df = pd.read_csv(url,sep=';',encoding='Windows-1252')
-    buffer = io.StringIO()
+    rows_count = len(df. index)
+    buffer = io.StringIO()    
     df.to_csv(buffer,encoding='utf-8',sep=';',index=None)
-    
+    # logging checkpoint
+    logging.info(f"Pandas dataframe was successfully buffered by StringIO")
     client.put_object(ACL='private',
               Body=buffer.getvalue(),
               Bucket=bucket['source_bucket'],
               Key=f'{YearMonthDateFolder}cad_cia_aberta.csv')
+    # logging checkpoint
+    logging.info(f"{rows_count} rows for cad_cia_aberta.csv were uploded to s3 bucket {bucket['source_bucket']}")
 
 def s3_cad_cia_abertaCVM_to_processed():
     

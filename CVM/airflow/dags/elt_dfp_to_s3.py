@@ -46,16 +46,11 @@ def elt_to_s3():
     def upload_to_s3_landing():
         s3_upload_file_iterate_source()
         return None
-    
-
-
-    
+        
     t1 = create_local_dir()
     t2 = getting_files_from_opendata()
     t3 = saving_as_csv()
     t4 = upload_to_s3_landing()  
-
-
     
     chain(init,t1,t2,t3,t4,finish)    
 
